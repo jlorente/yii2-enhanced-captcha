@@ -1,0 +1,22 @@
+{
+    "name": "jlorente/yii2-enhanced-captcha",
+    "description": "A Yii2 extension that enhances the captcha component with the functionality of being shown only on multiple requests from the same IP",
+    "keywords": ["yii2", "captcha", "extension", "IP", "ip", "request", "requests", "multiple"],
+    "homepage": "https://github.com/jlorente/yii2-enhanced-captcha",
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jose Lorente Martin",
+            "email": "jose.lorente.martin@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "jlorente\\captcha\\": ""
+        }
+    }
+}
