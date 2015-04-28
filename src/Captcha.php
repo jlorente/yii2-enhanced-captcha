@@ -10,7 +10,6 @@
 namespace jlorente\captcha;
 
 use yii\captcha\Captcha as BaseCaptcha;
-use jlorente\captcha\Module;
 use yii\base\InvalidConfigException;
 
 class Captcha extends BaseCaptcha {
@@ -22,11 +21,8 @@ class Captcha extends BaseCaptcha {
         if ($this->model === null) {
             throw new InvalidConfigException('This functionality works only with inputs created from models');
         }
-        if (($this->model instanceof Captchable) === false) {
-            throw new InvalidConfigException('The provided model must implement jlorente\captcha\Captchable interface');
-        }
-        
-        $this->captchaAction = Module::getInstance()->urlManager->createUrl(['jlorente/captcha/get']);
+
+        $this->captchaAction = ['/site/captcha'];
         parent::init();
     }
 

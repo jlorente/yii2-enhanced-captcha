@@ -10,14 +10,13 @@
 namespace jlorente\captcha;
 
 use yii\base\Module as BaseModule;
+use yii\caching\ApcCache;
 
 class Module extends BaseModule {
 
-    public $controllerNamespace = 'jlorente\captcha';
-
-    public $requestNumber = 3;
+    public $requestNumber = 2;
     
-    public $duration = 120;
+    public $duration = 60;
     
     public function init() {
         parent::init();
@@ -26,15 +25,8 @@ class Module extends BaseModule {
             '@jlorenteCaptcha' => '@vendor/jlorente/yii2-enhanced-captcha'
         ]);
         $this->setComponents([
-            'urlManager' => [
-                'class' => 'yii\web\UrlManager',
-                'enablePrettyUrl' => true,
-                'showScriptName' => false,
-                'enableStrictParsing' => false,
-                'rules' => ['jlorente/captcha/get']
-            ],
-            'apc' => [
-                'class' => 'yii\caching\ApcCache'
+            'cache' => [
+                'class' => ApcCache::className()
             ],
         ]);
     }

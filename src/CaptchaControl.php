@@ -2,7 +2,8 @@
 
 /**
  * @author      José Lorente <jose.lorente.martin@gmail.com>
- * @copyright   Gabinete Jurídico y de Transportes <https://portalabogados.es>
+ * @license     The MIT License (MIT)
+ * @copyright   José Lorente
  * @version     1.0
  */
 
@@ -41,7 +42,7 @@ class CaptchaControl extends Model {
 
     public function getCacheKey() {
         if ($this->cacheKey === null) {
-            $this->cacheKey = $this->getModule()->apc->buildKey(Yii::$app->request->userIp . '_' . get_class($this->model));
+            $this->cacheKey = $this->getModule()->cache->buildKey(Yii::$app->request->userIp . '_' . get_class($this->model));
         }
         return $this->cacheKey;
     }
@@ -51,8 +52,10 @@ class CaptchaControl extends Model {
     }
 
     public function hit() {
-        $this->refreshCache();
         $queue = $this->getQueue();
+        if (count($this->getQueue()) >= $this->getModule()->requestNumber) {
+            $queue->dequeue();
+        }
         $queue->enqueue(time());
         $this->setInternal($queue);
     }
@@ -60,27 +63,28 @@ class CaptchaControl extends Model {
     public function hasReachedRequestNumber() {
         return $this->getRequestNumber() > $this->getModule()->requestNumber;
     }
-    
+
     protected function getQueue() {
         $cacheKey = $this->getCacheKey();
         $now = time();
-        if ($this->getModule()->apc->exists($cacheKey)) {
-            $this->queue = $this->getModule()->apc->get($cacheKey);
+        $queue = new SplQueue();
+        if ($this->getModule()->cache->exists($cacheKey)) {
+            $queue = $this->getModule()->cache->get($cacheKey);
             $modified = false;
             $expired = $now - $this->getModule()->duration;
-            while ($this->queue->top() < $expired) {
-                $this->queue->dequeue();
+            while ($queue->top() < $expired) {
+                $queue->dequeue();
                 $modified = true;
             }
             if ($modified) {
-                $this->setInternal($this->queue);
+                $this->setInternal($queue);
             }
-        } else {
-            $this->queue = new SplQueue();
         }
+        return $queue;
     }
 
     protected function setInternal(SplQueue $queue) {
-        $this->getModule()->apc->set($this->getCacheKey(), $queue, $this->getModule()->duration);
+        $this->getModule()->cache->set($this->getCacheKey(), $queue, $this->getModule()->duration);
     }
+
 }
