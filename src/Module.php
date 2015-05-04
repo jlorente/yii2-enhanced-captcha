@@ -11,12 +11,15 @@ namespace jlorente\captcha;
 
 use yii\base\Module as BaseModule;
 use yii\caching\ApcCache;
+use yii\base\BootstrapInterface;
+use yii\captcha\CaptchaAction;
+use Yii;
 
 /**
  * Module class of the enhanced captcha functionality with the default params 
  * loaded.
  * The module MUST be set in the modules section of your application file and 
- * MUST be bootstraped or MUST be loaded in the action that uses it.
+ * MUST be bootstraped or MUST be loaded before using it.
  * 
  * .../myappconfig.php ->
  * [
@@ -37,44 +40,28 @@ use yii\caching\ApcCache;
  *     ]
  * ]
  * 
- * 
  * @author José Lorente <jose.lorente.martin@gmail.com>
  */
-class Module extends BaseModule {
+class Module extends BaseModule implements BootstrapInterface {
 
     /**
      *
      * @var int Request number allowed before the captcha is shown.
      */
     public $requestNumber = 2;
-    
+
     /**
      *
-     * @var int Duration of the time period to check in miliseconds
+     * @var int Duration of the time period to check in miliseconds.
      */
     public $duration = 60;
 
     /**
      *
-     * @var array Params to create the cache component
-     * 
-     * i.e.:
-     * [
-     *     ...
-     *     'modules' => [
-     *         ...
-     *         'captcha' => [
-     *             'class' => 'jlorente\captcha\Module',
-     *             'cache' => [
-     *                 'class' => 'yii\caching\ApcCache',
-     *                 'keyPrefix' => 'captcha_'
-     *             ]
-     *         ]
-     *     ]
-     * ]
+     * @var array Configuration array to create the CaptchaAction object.
      */
-    public $cache;
-    
+    public $captchaAction;
+
     /**
      * @inheritdoc
      * 
@@ -83,15 +70,46 @@ class Module extends BaseModule {
     public function init() {
         parent::init();
 
-        if ($this->cache === null) {
-            $this->cache = [
+        $this->controllerNamespace = 'jlorente\captcha';
+
+        $this->setAliases([
+            '@captchaRoute' => '/' . $this->getUniqueId() . '/captcha/index',
+        ]);
+
+        if (empty($this->cache)) {
+            $this->setCache([
                 'class' => ApcCache::className(),
                 'keyPrefix' => 'captcha_'
-            ];
+            ]);
         }
 
+        if (empty($this->captchaAction)) {
+            $this->captchaAction = [
+                'class' => CaptchaAction::className(),
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null
+            ];
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * 
+     * @param \yii\base\Module $app
+     */
+    public function bootstrap($app) {
+        $app->getUrlManager()->addRules([
+            'jlorente-captcha' => Yii::getAlias('@captchaRoute')
+        ]);
+    }
+
+    /**
+     * Creates the cache component with the given arguments.
+     * 
+     * @param array $cache
+     */
+    protected function setCache($cache) {
         $this->setComponents([
-            'cache' => $this->cache,
+            'cache' => $cache,
         ]);
     }
 

@@ -11,6 +11,7 @@ namespace jlorente\captcha;
 
 use yii\captcha\Captcha as BaseCaptcha;
 use yii\base\InvalidConfigException;
+use Yii;
 
 /**
  * Captcha widget extends the functionality of yii\captcha\Captcha widget class 
@@ -34,7 +35,7 @@ class Captcha extends BaseCaptcha {
             throw new InvalidConfigException('This functionality works only with inputs created from models');
         }
 
-        $this->captchaAction = ['/site/captcha'];
+        $this->captchaAction = Yii::getAlias('@captchaRoute');
         parent::init();
     }
 

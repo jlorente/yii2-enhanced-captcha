@@ -10,6 +10,7 @@
 namespace jlorente\captcha;
 
 use yii\captcha\CaptchaValidator as BaseCaptchaValidator;
+use Yii;
 
 /**
  * CaptchaValidator extends the functionality of yii\captcha\CaptchaValidator 
@@ -20,6 +21,15 @@ use yii\captcha\CaptchaValidator as BaseCaptchaValidator;
  * @author José Lorente <jose.lorente.martin@gmail.com>
  */
 class CaptchaValidator extends BaseCaptchaValidator {
+
+    /**
+     * @inheritdoc
+     */
+    public function init() {
+        $this->captchaAction = Yii::getAlias('@captchaRoute');
+
+        parent::init();
+    }
 
     /**
      * @inheritdoc

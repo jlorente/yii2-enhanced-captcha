@@ -1,5 +1,5 @@
-Yii2 Enhanced Captcha (Development Phase)
-=========================================
+Yii2 Enhanced Captcha
+=====================
 
 A Yii2 extension that enhances the captcha component with the functionality of 
 being shown only on multiple requests from the same IP
@@ -54,7 +54,7 @@ You can include it by other ways. Anyway, the module id is irrelevant to use
 this Module, so you can establish the one you want. For more information about 
 including modules see [The Definitive Guide to Yii 2.0 - Modules](http://www.yiiframework.com/doc-2.0/guide-structure-modules.html).
 
-The captcha Module uses a cache component to store the requests timestamp queue. 
+The captcha Module uses a cache component to store the timestamp requests queue. 
 By default it uses Apc Cache, but you can change this behavior setting the cache 
 property in the module declaration.
 
@@ -116,6 +116,41 @@ return [
 
 By default the number of requests are 2 and the duration 120.
 
+A controller action is provided along with the Module. This CaptchaAction can 
+be configured in the module configuration params. See the [manual](http://www.yiiframework.com/doc-2.0/yii-captcha-captchaaction.html) 
+to have a complete list of CaptchaAction configuration params.
+
+```php
+<?php
+//.../config/main.php
+return [
+    // ... other configurations ...
+    'modules' => [
+        // list of modules,
+        'captcha' => [
+            'class' => 'jlorente\captcha\Module',
+            'cache' => [
+                'class' => 'yii\caching\ApcCache',
+                // ... other configurations for the cache component ...
+            ],
+            'duration' => 100, //In seconds
+            'requestNumber' => 3,
+            'captchaAction' => [
+                'class' => CaptchaAction::className(),
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                // ... other configurations for the captcha action ...
+            ]
+            // ... other configurations for the module ...
+        ]
+    ],
+    'bootstrap' => [
+        //other modules to bootstrap,
+        'captcha'
+    ]
+];
+```
+
+
 ###Using the widget and the validator
 
 Once the module is configured and loaded you can use the widget and validator 
@@ -171,8 +206,8 @@ of the Model isn't called on form submit, the captcha will never be shown.
 
 This module is an extension of the captcha functionality that comes with the Yii 2.0 
 framework to provide additional functionality, so if you want to see more 
-options and configurations please refer to the [manual](http://www.yiiframework.com/doc-2.0/yii-captcha-captcha.html)
-
+options and configurations of the widget, validator and action please refer to 
+the [manual](http://www.yiiframework.com/doc-2.0/yii-captcha-captcha.html).
 
 ## License 
 Copyright &copy; 2015 José Lorente Martín <jose.lorente.martin@gmail.com>.

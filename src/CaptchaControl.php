@@ -78,7 +78,8 @@ class CaptchaControl extends Model {
      */
     public function getCacheKey() {
         if ($this->cacheKey === null) {
-            $this->cacheKey = $this->getModule()->cache->buildKey(Yii::$app->request->userIp . '_' . get_class($this->model));
+            $module = $this->getModule();
+            $this->cacheKey = $module->cache->buildKey(Yii::$app->request->userIp . '_' . get_class($this->model));
         }
         return $this->cacheKey;
     }
