@@ -63,6 +63,12 @@ class Module extends BaseModule implements BootstrapInterface {
     public $captchaAction;
 
     /**
+     *
+     * @var array Configuration array to create the Cache object.
+     */
+    protected $cache;
+    
+    /**
      * @inheritdoc
      * 
      * Creates the default cache component if it is not provided.
@@ -108,6 +114,7 @@ class Module extends BaseModule implements BootstrapInterface {
      * @param array $cache
      */
     protected function setCache($cache) {
+        $this->cache = $cache;
         $this->setComponents([
             'cache' => $cache,
         ]);
