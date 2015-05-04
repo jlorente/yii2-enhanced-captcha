@@ -82,7 +82,7 @@ return [
 ```
 
 For more information about supported cache storages and initialization of the 
-component see the [Manual](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#supported-cache-storage).
+component see the [manual](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#supported-cache-storage).
 
 Other properties like the duration of the time period to check and the number of 
 requests before the captcha will be shown can be established in the module 
