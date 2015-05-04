@@ -11,6 +11,14 @@ namespace jlorente\captcha;
 
 use yii\captcha\CaptchaValidator as BaseCaptchaValidator;
 
+/**
+ * CaptchaValidator extends the functionality of yii\captcha\CaptchaValidator 
+ * in order to decide whether to validate the captcha attribute or not 
+ * depending on the number of calls to the current Model::validate() method from 
+ * the same IP in a time period.
+ * 
+ * @author José Lorente <jose.lorente.martin@gmail.com>
+ */
 class CaptchaValidator extends BaseCaptchaValidator {
 
     /**
@@ -18,7 +26,7 @@ class CaptchaValidator extends BaseCaptchaValidator {
      * 
      * Checks the CaptchaControl object in order to know if validation is needed 
      * or not.
-     * Performs a hit for the model after validation.
+     * Performs a hit in the captcha control cache component.
      */
     public function validateAttribute($model, $attribute) {
         $captchaControl = new CaptchaControl(['model' => $model]);
